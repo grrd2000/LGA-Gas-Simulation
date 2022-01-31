@@ -26,7 +26,7 @@ public class InitialFrame extends JFrame {
         int frameWidth = 600;
         int frameHeight = 400;
         this.setSize(frameWidth, frameHeight);
-        this.setTitle("Forest Fire Simulation");
+        this.setTitle("LGA Simulation");
         this.getContentPane().setBackground(Color.DARK_GRAY);
         this.setLocationRelativeTo(null);
         this.setResizable(false);

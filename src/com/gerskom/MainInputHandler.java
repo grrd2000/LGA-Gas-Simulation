@@ -5,7 +5,6 @@ import java.io.IOException;
 
 public class MainInputHandler implements KeyListener, MouseListener, MouseMotionListener {
     SimulationPanel simulationPanel;
-    PaintTaskMaker paintTaskMaker;
     private static int mouseButton = -1;
 
     private final float brushSize = 45f;
@@ -13,10 +12,6 @@ public class MainInputHandler implements KeyListener, MouseListener, MouseMotion
 
     public MainInputHandler(SimulationPanel simulationPanel) {
         this.simulationPanel = simulationPanel;
-    }
-
-    public MainInputHandler(PaintTaskMaker paintTaskMaker) {
-        this.paintTaskMaker = paintTaskMaker;
     }
 
     @Override
@@ -49,7 +44,6 @@ public class MainInputHandler implements KeyListener, MouseListener, MouseMotion
             case 'o' -> {
                 simulationPanel.fpsCounter();
             }
-            //case'k' -> simulationPanel.kasienka();
         }
     }
 

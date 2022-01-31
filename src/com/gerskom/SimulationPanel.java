@@ -21,7 +21,7 @@ public class SimulationPanel extends JPanel {
     private static final int THREADS = 6;
     private static final int XTASKS = 6;
     private static final int YTASKS = 6;
-    private final int deltaTime = 12;
+    private final int deltaTime = 5;
     public long firstTime;
     public long secondTime;
     private double maxDiff = 0;
@@ -57,38 +57,19 @@ public class SimulationPanel extends JPanel {
         super.paintComponent(g);
         g2D = (Graphics2D) g.create();
 
-        /*int taskSizeX = (int)Math.ceil((double)((map.width - 1) - 1) / XTASKS);
-        int taskSizeY = (int)Math.ceil((double)((map.height - 1) - 1) / YTASKS);
-
-        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-
-        for(int i = 0; i < XTASKS; i++) {
-            for(int j = 0; j < YTASKS; j++) {
-                //new PaintTaskMaker(this, taskSizeX * i, taskSizeX * (i + 1), taskSizeY * j, taskSizeY * (j + 1)).run();
-                Runnable worker = new PaintTaskMaker(this, taskSizeX * i, taskSizeX * (i + 1), taskSizeY * j, taskSizeY * (j + 1));
-                executor.execute(worker);
-            }
-        }
-
-        executor.shutdown();*/
-
-        //RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //g2D.setRenderingHints(hints);
-
-        for(int x = halfSize; x < map.width - halfSize; x += halfSize + 1) {
+        /*for(int x = halfSize; x < map.width - halfSize; x += halfSize + 1) {
             for(int y = halfSize; y < map.height - halfSize; y += halfSize + 1) {
                 int counter = countParticles(x - halfSize, x + halfSize, y - halfSize, y + halfSize);
                 int color = counter * colorRes / colorPart;
-                //System.out.println(color);
                 if(color < 256)
                     g2D.setColor(new Color(color, color, color));
                 else
                     g2D.setColor(Color.WHITE);
                 g2D.fillRect(x, y, densityCellSize, densityCellSize);
             }
-        }
+        }*/
 
-        /*for(int x = 0; x < map.width; x++){
+        for(int x = 0; x < map.width; x++){
             for(int y = 0; y < map.height; y++){
                 if(tmpData[x][y] == 1)
                     g2D.setColor(particleColor);
@@ -99,9 +80,8 @@ public class SimulationPanel extends JPanel {
 
                 g2D.fillRect(x, y, 1, 1);
             }
-        }*/
+        }
         g2D.dispose();
-        //this.requestFocusInWindow();
     }
 
     public void startTheParallelGasSimulation(){
@@ -111,11 +91,21 @@ public class SimulationPanel extends JPanel {
         int taskSizeX = (int)Math.ceil((double)((map.width - 1) - 1) / XTASKS);
         int taskSizeY = (int)Math.ceil((double)((map.height - 1) - 1) / YTASKS);
 
+        //GridTaskMaker grid = new GridTaskMaker(map, 0, map.width - 1, 0, map.height - 1, 1);
+
         timer = new Timer(deltaTime, e -> {
             firstTime = System.nanoTime();
             i++;
 
+            try { exportImage("gas_simulation"); }
+            catch (IOException ex) { ex.printStackTrace(); }
+
             dataConversion();
+
+            //grid.inOperation();
+            //grid.dataCopier();
+            //grid.outOperation();
+
             ExecutorService executor = Executors.newFixedThreadPool(THREADS);
             for(int i = 0; i < XTASKS; i++) {
                 for(int j = 0; j < YTASKS; j++) {
@@ -136,6 +126,7 @@ public class SimulationPanel extends JPanel {
                 }
             }
             executor.shutdown();
+
             repaint();
 
             secondTime = System.nanoTime();
@@ -161,13 +152,13 @@ public class SimulationPanel extends JPanel {
         }
         g2D.dispose();
 
-        String formatName = "bmp";
+        String formatName = "png";
         File file;
 
-        if (map.i != 0)
+        //if (i != 0)
             file = new File("output/" + fileName + "_" + map.i + "." + formatName);
-        else
-            file = new File("output/test_gas." + formatName);
+        //else
+        //    file = new File("output/test_gas." + formatName);
 
         ImageIO.write(bufferedImage, formatName, file);
     }
