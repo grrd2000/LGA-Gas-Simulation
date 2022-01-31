@@ -18,9 +18,9 @@ public class SimulationPanel extends JPanel {
     public int[][] tmpData;
     public boolean started = false;
 
-    private static final int THREADS = 6;
-    private static final int XTASKS = 6;
-    private static final int YTASKS = 6;
+    private static final int THREADS = 4;
+    private static final int XTASKS = 4;
+    private static final int YTASKS = 4;
     private final int deltaTime = 5;
     public long firstTime;
     public long secondTime;
@@ -31,7 +31,7 @@ public class SimulationPanel extends JPanel {
     public int i = 0;
     public Graphics2D g2D;
 
-    private static final int densityCellSize = 20;
+    private static final int densityCellSize = 12;
     private static final int halfSize = densityCellSize / 2;
     private static final int colorRes = 15;
     private static final int colorPart = 255 / colorRes;
@@ -57,7 +57,7 @@ public class SimulationPanel extends JPanel {
         super.paintComponent(g);
         g2D = (Graphics2D) g.create();
 
-        /*for(int x = halfSize; x < map.width - halfSize; x += halfSize + 1) {
+        for(int x = halfSize; x < map.width - halfSize; x += halfSize + 1) {
             for(int y = halfSize; y < map.height - halfSize; y += halfSize + 1) {
                 int counter = countParticles(x - halfSize, x + halfSize, y - halfSize, y + halfSize);
                 int color = counter * colorRes / colorPart;
@@ -67,9 +67,9 @@ public class SimulationPanel extends JPanel {
                     g2D.setColor(Color.WHITE);
                 g2D.fillRect(x, y, densityCellSize, densityCellSize);
             }
-        }*/
+        }
 
-        for(int x = 0; x < map.width; x++){
+        /*for(int x = 0; x < map.width; x++){
             for(int y = 0; y < map.height; y++){
                 if(tmpData[x][y] == 1)
                     g2D.setColor(particleColor);
@@ -80,7 +80,7 @@ public class SimulationPanel extends JPanel {
 
                 g2D.fillRect(x, y, 1, 1);
             }
-        }
+        }*/
         g2D.dispose();
     }
 
@@ -93,11 +93,13 @@ public class SimulationPanel extends JPanel {
 
         //GridTaskMaker grid = new GridTaskMaker(map, 0, map.width - 1, 0, map.height - 1, 1);
 
+        map.initRandomCells(325000);
+
         timer = new Timer(deltaTime, e -> {
             firstTime = System.nanoTime();
             i++;
 
-            try { exportImage("gas_simulation"); }
+            try { exportImage("gas_sim_concentration"); }
             catch (IOException ex) { ex.printStackTrace(); }
 
             dataConversion();
@@ -138,7 +140,18 @@ public class SimulationPanel extends JPanel {
         BufferedImage bufferedImage = new BufferedImage(map.width, map.height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2D = bufferedImage.createGraphics();
 
-        for(int x = 0; x < map.width; x++){
+        for(int x = halfSize; x < map.width - halfSize; x += halfSize + 1) {
+            for(int y = halfSize; y < map.height - halfSize; y += halfSize + 1) {
+                int counter = countParticles(x - halfSize, x + halfSize, y - halfSize, y + halfSize);
+                int color = counter * colorRes / colorPart;
+                if(color < 256)
+                    g2D.setColor(new Color(color, color, color));
+                else
+                    g2D.setColor(Color.WHITE);
+                g2D.fillRect(x, y, densityCellSize, densityCellSize);
+            }
+        }
+        /*for(int x = 0; x < map.width; x++){
             for(int y = 0; y < map.height; y++){
                 if(tmpData[x][y] == 1)
                     g2D.setColor(particleColor);
@@ -149,14 +162,14 @@ public class SimulationPanel extends JPanel {
 
                 g2D.fillRect(x, y, 1, 1);
             }
-        }
+        }*/
         g2D.dispose();
 
         String formatName = "png";
         File file;
 
-        //if (i != 0)
-            file = new File("output/" + fileName + "_" + map.i + "." + formatName);
+        ///if (i < 1)
+            file = new File("output/" + fileName + "_" + i + "." + formatName);
         //else
         //    file = new File("output/test_gas." + formatName);
 

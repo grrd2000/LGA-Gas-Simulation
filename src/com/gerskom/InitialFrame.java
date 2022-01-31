@@ -17,8 +17,8 @@ public class InitialFrame extends JFrame {
     JPanel eastPanel = new JPanel();
     JPanel centerPanel = new JPanel();
 
-    JTextField gameWidth = new JTextField("600");
-    JTextField gameHeight = new JTextField("500");
+    JTextField gameWidth = new JTextField("500");
+    JTextField gameHeight = new JTextField("350");
     JTextField gameNMax = new JTextField("200000");
     JButton startButton = new JButton("PLAY");
 

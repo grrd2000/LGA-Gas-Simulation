@@ -312,6 +312,15 @@ public class Grid {
         }
     }
 
+    public void initRandomCells(int nMax) {
+        for(int c = 0; c < nMax; c++) {
+            Random ran = new Random();
+            int x = ran.nextInt(width - 10) + 5;
+            int y = ran.nextInt(height - 10) + 5;
+            initCell(x, y);
+        }
+    }
+
     private void initComputeArea() {
         for(int x = 0; x < width; x++)
             for(int y = 0; y < height; y++) {
